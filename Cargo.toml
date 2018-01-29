@@ -1,0 +1,11 @@
+[package]
+name = "minimp3-rs"
+version = "0.1.0"
+authors = ["germän gômez <germangb42@gmail.com>"]
+
+[dependencies]
+libc = "0.2"
+
+[build-dependencies]
+gcc = "0.3.54"
+bindgen = "0.32.3"
