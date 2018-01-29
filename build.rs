@@ -4,6 +4,7 @@ extern crate bindgen;
 fn main() {
     let bindings = bindgen::Builder::default()
         .header("minimp3/minimp3.h")
+        .layout_tests(false)
         .generate()
         .expect("Unable to generate minimp3 bindings");
 
