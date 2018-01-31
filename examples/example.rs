@@ -2,16 +2,7 @@ extern crate minimp3;
 
 use minimp3::bindgen;
 
-use std::path::Path;
-use std::fs::File;
-use std::io::Read;
 use std::mem;
-
-fn preload_file<P: AsRef<Path>>(path: P) -> Vec<u8> {
-    let file = File::open(path).unwrap();
-    let buffer: Result<Vec<_>, _> = file.bytes().collect();
-    buffer.unwrap()
-}
 
 fn decode_frame(ctx: &mut bindgen::mp3dec_t, mp3_file: &[u8], pcm: &mut [i16], frame_info: &mut bindgen::mp3dec_frame_info_t) -> Option<usize> {
     unsafe {
@@ -23,8 +14,11 @@ fn decode_frame(ctx: &mut bindgen::mp3dec_t, mp3_file: &[u8], pcm: &mut [i16], f
 }
 
 fn main() {
-    // read mp3 file
-    let mp3_buf = preload_file("/home/germangb/Downloads/saxu.mp3");
+    //for (var, value) in env::vars() {
+    //    println!("{}={}", var, value);
+    //}
+
+    let mp3_buf = include_bytes!("../minimp3/vectors/M2L3_bitrate_24_all.bit");
 
     let mut context = unsafe { mem::zeroed() };
 
