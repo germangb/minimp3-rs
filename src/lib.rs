@@ -1,5 +1,6 @@
+#![crate_name = "minimp3"]
+#![crate_type = "rlib"]
+
 extern crate libc;
 
-mod bindgen;
-
-
+pub mod bindgen;

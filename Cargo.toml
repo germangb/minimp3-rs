@@ -1,5 +1,5 @@
 [package]
-name = "minimp3-rs"
+name = "minimp3"
 version = "0.1.0"
 authors = ["germän gômez <germangb42@gmail.com>"]
 
@@ -7,5 +7,5 @@ authors = ["germän gômez <germangb42@gmail.com>"]
 libc = "0.2"
 
 [build-dependencies]
-gcc = "0.3.54"
+cc = "1.0"
 bindgen = "0.32.3"
