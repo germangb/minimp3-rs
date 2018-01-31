@@ -2,9 +2,14 @@
 name = "minimp3"
 version = "0.1.0"
 authors = ["germän gômez <germangb42@gmail.com>"]
+description = "Rust bindings for the minimp3 library."
+keywords = ["mp3", "audio", "decoder", "mpeg", "media"]
+categories = ["multimedia", "multimedia::audio"]
+license = "MIT"
+repository = "https://github.com/germangb/minimp3-rs.git"
 
 [dependencies]
-libc = "0.2"
+#libc = "0.2"
 
 [build-dependencies]
 cc = "1.0"
