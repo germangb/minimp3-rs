@@ -8,9 +8,7 @@ categories = ["multimedia", "multimedia::audio"]
 license = "MIT"
 repository = "https://github.com/germangb/minimp3-rs.git"
 
-[dependencies]
-#libc = "0.2"
+[workspace]
 
-[build-dependencies]
-cc = "1.0"
-bindgen = "0.32.3"
+[dependencies]
+minimp3-sys = { path = "minimp3-sys" }

@@ -1,0 +1,10 @@
+[package]
+name = "minimp3-sys"
+version = "0.1.0"
+authors = ["germän gômez <germangb42@gmail.com>"]
+license = "MIT"
+categories = ["external-ffi-bindings"]
+
+[build-dependencies]
+cc = "1.0"
+bindgen = "0.37.0"

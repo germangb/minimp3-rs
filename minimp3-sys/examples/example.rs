@@ -1,19 +1,28 @@
-extern crate minimp3;
+extern crate minimp3_sys;
 
-use minimp3::bindgen;
-
-use std::mem;
 use std::io;
+use std::mem;
 
 use std::io::Write;
 
-fn decode_frame(ctx: &mut bindgen::mp3dec_t, mp3_file: &[u8], pcm: &mut [i16], frame_info: &mut bindgen::mp3dec_frame_info_t) -> Option<usize> {
+fn decode_frame(
+    ctx: &mut minimp3_sys::mp3dec_t,
+    mp3_file: &[u8],
+    pcm: &mut [i16],
+    frame_info: &mut minimp3_sys::mp3dec_frame_info_t,
+) -> Option<usize> {
     unsafe {
-        let samples = bindgen::mp3dec_decode_frame(ctx, mp3_file.as_ptr(), mp3_file.len() as _, pcm.as_mut_ptr(), frame_info);
+        let samples = minimp3_sys::mp3dec_decode_frame(
+            ctx,
+            mp3_file.as_ptr(),
+            mp3_file.len() as _,
+            pcm.as_mut_ptr(),
+            frame_info,
+        );
 
         match frame_info.frame_bytes {
-            0       => None,
-            _   => Some(samples as usize),
+            0 => None,
+            _ => Some(samples as usize),
         }
     }
 }
@@ -23,13 +32,13 @@ fn main() {
 
     let mut context = unsafe { mem::zeroed() };
 
-    unsafe { bindgen::mp3dec_init(&mut context) };
+    unsafe { minimp3_sys::mp3dec_init(&mut context) };
 
     // output samples
-    let mut pcm = vec![0i16; bindgen::MINIMP3_MAX_SAMPLES_PER_FRAME as usize];
+    let mut pcm = vec![0i16; minimp3_sys::MINIMP3_MAX_SAMPLES_PER_FRAME as usize];
 
     // frame info
-    let mut frame: bindgen::mp3dec_frame_info_t = unsafe { mem::zeroed() };
+    let mut frame: minimp3_sys::mp3dec_frame_info_t = unsafe { mem::zeroed() };
 
     let mut offset = 0usize;
     let mut stdout = io::stdout();
