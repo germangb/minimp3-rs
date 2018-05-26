@@ -12,7 +12,8 @@ pub use error::Error;
 /// Maximum samples we will ever see in a single MP3 frame.
 pub const MAX_SAMPLES_PER_FRAME: usize = ffi::MINIMP3_MAX_SAMPLES_PER_FRAME as usize;
 
-const BUFFER_SIZE: usize = MAX_SAMPLES_PER_FRAME * 6;
+const BUFFER_SIZE: usize = MAX_SAMPLES_PER_FRAME * 15;
+const REFILL_TRIGGER: usize = MAX_SAMPLES_PER_FRAME * 8;
 
 pub struct Decoder<R>
 where
@@ -57,6 +58,13 @@ where
     }
 
     pub fn next_frame(&mut self) -> Result<Frame, Error> {
+        // Keep our buffers full
+        if self.buffer.len() < REFILL_TRIGGER {
+            if self.refill()? == 0 {
+                return Err(Error::Eof)
+            }
+        }
+
         match self.decode_frame() {
             Ok(frame) => Ok(frame),
             Err(Error::InsufficientData) => {
@@ -101,17 +109,12 @@ where
             bitrate: frame_info.bitrate_kbps,
         };
 
-
         let current_len = self.buffer.len();
         self.buffer.truncate_front(current_len - frame_info.frame_bytes as usize);
 
         if samples == 0 {
-            if frame_info.frame_bytes > 0 {
-                if self.buffer.len() < MAX_SAMPLES_PER_FRAME*2 {
-                    Err(Error::InsufficientData)
-                } else {
-                    Err(Error::SkippedData)
-                }
+            if frame_info.frame_bytes > 0 {            
+                Err(Error::SkippedData)
             } else {
                 Err(Error::InsufficientData)
             }
@@ -121,7 +124,7 @@ where
     }
 
     fn refill(&mut self) -> Result<usize, io::Error> {
-        let mut dat: [u8; MAX_SAMPLES_PER_FRAME*2] = [0; MAX_SAMPLES_PER_FRAME*2];
+        let mut dat: [u8; MAX_SAMPLES_PER_FRAME*5] = [0; MAX_SAMPLES_PER_FRAME*5];
         let read_bytes = self.reader.read(&mut dat)?;
         self.buffer.extend(dat.iter());
 
