@@ -9,12 +9,15 @@ use std::mem;
 mod error;
 pub use error::Error;
 
-/// Maximum samples we will ever see in a single MP3 frame.
+/// Maximum number of samples present in a MP3 frame.
 pub const MAX_SAMPLES_PER_FRAME: usize = ffi::MINIMP3_MAX_SAMPLES_PER_FRAME as usize;
 
 const BUFFER_SIZE: usize = MAX_SAMPLES_PER_FRAME * 15;
 const REFILL_TRIGGER: usize = MAX_SAMPLES_PER_FRAME * 8;
 
+/// A MP3 decoder which consumes a reader and produces [`Frame`]s.
+///
+/// [`Frame`]: ./struct.Frame.html
 pub struct Decoder<R>
 where
     R: Read,
@@ -33,16 +36,17 @@ where
 {
 }
 
+/// A MP3 frame, owning the decoded audio of that frame.
 pub struct Frame {
-    /// The raw data held by this frame.
+    /// The decoded audio held by this frame. Channels are interleaved.
     pub data: Vec<i16>,
-    /// This frame's sample rate (Hz)
+    /// This frame's sample rate in hertz.
     pub sample_rate: i32,
     /// The number of channels in this frame.
     pub channels: usize,
-    /// MPEG layer used by this file
+    /// MPEG layer used by this file.
     pub layer: usize,
-    /// Current bitrate as of this frame (kb/s)
+    /// Current bitrate as of this frame, in kb/s.
     pub bitrate: i32,
 }
 
@@ -50,6 +54,7 @@ impl<R> Decoder<R>
 where
     R: Read,
 {
+    /// Creates a new decoder, consuming the `reader`.
     pub fn new(reader: R) -> Decoder<R> {
         let mut minidec = unsafe { Box::new(mem::zeroed()) };
         unsafe { ffi::mp3dec_init(&mut *minidec) }
@@ -61,6 +66,10 @@ where
         }
     }
 
+    /// Reads a new frame from the internal reader. Returns a [`Frame`] if one was found,
+    /// or, otherwise, an `Err` explaining why not.
+    ///
+    /// [`Frame`]: ./struct.Frame.html
     pub fn next_frame(&mut self) -> Result<Frame, Error> {
         // Keep our buffers full
         if self.buffer.len() < REFILL_TRIGGER {

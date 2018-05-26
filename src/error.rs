@@ -2,11 +2,16 @@ use std::error::Error as StdError;
 use std::fmt;
 use std::io;
 
+/// Errors encountered by the MP3 decoder.
 #[derive(Debug)]
 pub enum Error {
+    /// An error caused by some IO operation required during decoding.
     Io(io::Error),
+    /// The decoder tried to parse a frame from its internal buffer, but there was not enough.
     InsufficientData,
+    /// The decoder encountered data which was not a frame (ie, ID3 data), and skipped it.
     SkippedData,
+    /// The decoder has reached the end of the provided reader.
     Eof,
 }
 
