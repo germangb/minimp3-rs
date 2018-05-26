@@ -5,7 +5,8 @@ use std::io;
 #[derive(Debug)]
 pub enum Error {
     Io(io::Error),
-    EmptyBuffer,
+    InsufficientData,
+    SkippedData,
     Eof,
 }
 
@@ -28,7 +29,8 @@ impl StdError for Error {
     fn description(&self) -> &str {
         match self {
             Error::Io(io_err) => io_err.description(),
-            Error::EmptyBuffer => "Empty decoder buffer",
+            Error::InsufficientData => "Insufficient data",
+            Error::SkippedData => "Skipped data",
             Error::Eof => "End of reader",
         }
     }

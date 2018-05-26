@@ -1,7 +1,9 @@
 extern crate minimp3_sys as ffi;
+extern crate slice_deque;
 
 use std::io::{self, Read};
 use std::mem;
+use slice_deque::SliceDeque;
 
 mod error;
 pub use error::Error;
@@ -9,14 +11,14 @@ pub use error::Error;
 /// Maximum samples we will ever see in a single MP3 frame.
 pub const MAX_SAMPLES_PER_FRAME: usize = ffi::MINIMP3_MAX_SAMPLES_PER_FRAME as usize;
 
-const BUFFER_SIZE: usize = MAX_SAMPLES_PER_FRAME * 3;
+const BUFFER_SIZE: usize = MAX_SAMPLES_PER_FRAME * 6;
 
 pub struct Decoder<R>
 where
     R: Read,
 {
     reader: R,
-    buffer: Box<[u8; BUFFER_SIZE]>,
+    buffer: SliceDeque<u8>,
     decoder: Box<ffi::mp3dec_t>,
 }
 
@@ -43,7 +45,7 @@ where
 
         Decoder {
             reader,
-            buffer: Box::new([0; BUFFER_SIZE]),
+            buffer: SliceDeque::with_capacity(BUFFER_SIZE),
             decoder: minidec,
         }
     }
@@ -51,7 +53,7 @@ where
     pub fn next_frame(&mut self) -> Result<Frame, Error> {
         match self.decode_frame() {
             Ok(frame) => Ok(frame),
-            Err(Error::EmptyBuffer) => {
+            Err(Error::InsufficientData) => {
                 // attempt a refill
                 if self.refill()? == 0 {
                     Err(Error::Eof)
@@ -59,6 +61,10 @@ where
                     // if that worked, grab a new frame
                     self.next_frame()
                 }
+            },
+            Err(Error::SkippedData) => {
+                // try reading a new frame
+                self.next_frame()
             },
             Err(e) => Err(e),
         }
@@ -77,6 +83,10 @@ where
             ) as _
         };
 
+        if samples > 0 {
+            unsafe {pcm.set_len(samples * frame_info.channels);}
+        }
+
         let frame = Frame {
             data: pcm,
             sample_rate: frame_info.hz,
@@ -85,14 +95,30 @@ where
             bitrate: frame_info.bitrate_kbps,
         };
 
+
+        let current_len = self.buffer.len();
+        self.buffer.truncate_front(current_len - frame_info.frame_bytes as usize);
+
         if samples == 0 {
-            Err(Error::EmptyBuffer)
+            if frame_info.frame_bytes > 0 {
+                if self.buffer.len() < MAX_SAMPLES_PER_FRAME*2 {
+                    Err(Error::InsufficientData)
+                } else {
+                    Err(Error::SkippedData)
+                }
+            } else {
+                Err(Error::InsufficientData)
+            }
         } else {
             Ok(frame)
         }
     }
 
     fn refill(&mut self) -> Result<usize, io::Error> {
-        self.reader.read(&mut *self.buffer)
+        let mut dat: [u8; MAX_SAMPLES_PER_FRAME*2] = [0; MAX_SAMPLES_PER_FRAME*2];
+        let read_bytes = self.reader.read(&mut dat)?;
+        self.buffer.extend(dat.iter());
+
+        Ok(read_bytes)
     }
 }
