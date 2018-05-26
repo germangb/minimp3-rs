@@ -90,7 +90,7 @@ where
         };
 
         if samples > 0 {
-            unsafe {pcm.set_len(samples * frame_info.channels);}
+            unsafe {pcm.set_len(samples * frame_info.channels as usize);}
         }
 
         let frame = Frame {
