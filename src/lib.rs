@@ -2,6 +2,7 @@ extern crate minimp3_sys as ffi;
 extern crate slice_deque;
 
 use std::io::{self, Read};
+use std::marker::Send;
 use std::mem;
 use slice_deque::SliceDeque;
 
@@ -21,6 +22,11 @@ where
     buffer: SliceDeque<u8>,
     decoder: Box<ffi::mp3dec_t>,
 }
+
+// Explicitly impl [Send] for [Decoder]s. This isn't a great idea and should probably be removed in the future.
+// The only reason it's here is that [SliceDeque] doesn't implement [Send] (since it uses raw pointers internally),
+// even though it's safe to send it across thread boundaries.
+unsafe impl<R> Send for Decoder<R> where R: Read {}
 
 pub struct Frame {
     /// The raw data held by this frame.
