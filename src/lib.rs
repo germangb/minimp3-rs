@@ -1,10 +1,10 @@
 extern crate minimp3_sys as ffi;
 extern crate slice_deque;
 
+use slice_deque::SliceDeque;
 use std::io::{self, Read};
 use std::marker::Send;
 use std::mem;
-use slice_deque::SliceDeque;
 
 mod error;
 pub use error::Error;
@@ -27,7 +27,11 @@ where
 // Explicitly impl [Send] for [Decoder]s. This isn't a great idea and should probably be removed in the future.
 // The only reason it's here is that [SliceDeque] doesn't implement [Send] (since it uses raw pointers internally),
 // even though it's safe to send it across thread boundaries.
-unsafe impl<R> Send for Decoder<R> where R: Read {}
+unsafe impl<R> Send for Decoder<R>
+where
+    R: Read,
+{
+}
 
 pub struct Frame {
     /// The raw data held by this frame.
@@ -61,7 +65,7 @@ where
         // Keep our buffers full
         if self.buffer.len() < REFILL_TRIGGER {
             if self.refill()? == 0 {
-                return Err(Error::Eof)
+                return Err(Error::Eof);
             }
         }
 
@@ -75,11 +79,11 @@ where
                     // if that worked, grab a new frame
                     self.next_frame()
                 }
-            },
+            }
             Err(Error::SkippedData) => {
                 // try reading a new frame
                 self.next_frame()
-            },
+            }
             Err(e) => Err(e),
         }
     }
@@ -98,7 +102,9 @@ where
         };
 
         if samples > 0 {
-            unsafe {pcm.set_len(samples * frame_info.channels as usize);}
+            unsafe {
+                pcm.set_len(samples * frame_info.channels as usize);
+            }
         }
 
         let frame = Frame {
@@ -110,10 +116,11 @@ where
         };
 
         let current_len = self.buffer.len();
-        self.buffer.truncate_front(current_len - frame_info.frame_bytes as usize);
+        self.buffer
+            .truncate_front(current_len - frame_info.frame_bytes as usize);
 
         if samples == 0 {
-            if frame_info.frame_bytes > 0 {            
+            if frame_info.frame_bytes > 0 {
                 Err(Error::SkippedData)
             } else {
                 Err(Error::InsufficientData)
@@ -124,7 +131,7 @@ where
     }
 
     fn refill(&mut self) -> Result<usize, io::Error> {
-        let mut dat: [u8; MAX_SAMPLES_PER_FRAME*5] = [0; MAX_SAMPLES_PER_FRAME*5];
+        let mut dat: [u8; MAX_SAMPLES_PER_FRAME * 5] = [0; MAX_SAMPLES_PER_FRAME * 5];
         let read_bytes = self.reader.read(&mut dat)?;
         self.buffer.extend(dat.iter());
 
