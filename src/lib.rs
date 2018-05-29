@@ -71,29 +71,21 @@ where
     ///
     /// [`Frame`]: ./struct.Frame.html
     pub fn next_frame(&mut self) -> Result<Frame, Error> {
-        // Keep our buffers full
-        if self.buffer.len() < REFILL_TRIGGER {
-            if self.refill()? == 0 {
-                return Err(Error::Eof);
-            }
-        }
-
-        match self.decode_frame() {
-            Ok(frame) => Ok(frame),
-            Err(Error::InsufficientData) => {
-                // attempt a refill
+        loop {
+            // Keep our buffers full
+            if self.buffer.len() < REFILL_TRIGGER {
                 if self.refill()? == 0 {
-                    Err(Error::Eof)
-                } else {
-                    // if that worked, grab a new frame
-                    self.next_frame()
+                    return Err(Error::Eof);
                 }
             }
-            Err(Error::SkippedData) => {
-                // try reading a new frame
-                self.next_frame()
+
+            match self.decode_frame() {
+                Ok(frame) => return Ok(frame),
+                // Don't do anything if we didn't have enough data or we skipped data,
+                // just let the loop spin around another time.
+                Err(Error::InsufficientData) | Err(Error::SkippedData) => {},
+                Err(e) => return Err(e),
             }
-            Err(e) => Err(e),
         }
     }
 
