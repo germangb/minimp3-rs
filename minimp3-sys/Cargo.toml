@@ -4,6 +4,8 @@ version = "0.2.0"
 authors = ["germän gômez <germangb42@gmail.com>", "Erin Moon <erin@hashbang.sh>"]
 license = "MIT"
 categories = ["external-ffi-bindings"]
+description = "Rust bindings for the minimp3 library."
+repository = "https://github.com/germangb/minimp3-rs.git"
 
 [build-dependencies]
 cc = "1.0"
