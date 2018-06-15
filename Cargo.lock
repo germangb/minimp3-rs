@@ -170,13 +170,14 @@ dependencies = [
 name = "minimp3"
 version = "0.2.0"
 dependencies = [
- "minimp3-sys 0.2.0",
+ "minimp3-sys 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "slice-deque 0.1.8 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
 name = "minimp3-sys"
 version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "bindgen 0.37.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "cc 1.0.15 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -413,6 +414,7 @@ dependencies = [
 "checksum mach 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)" = "b549fa8738e27dcf6c8c5d6d35211e786aa02715a22b60c33b9488fdd634a90b"
 "checksum memchr 1.0.2 (registry+https://github.com/rust-lang/crates.io-index)" = "148fab2e51b4f1cfc66da2a7c32981d1d3c083a803978268bb11fe4b86925e7a"
 "checksum memchr 2.0.1 (registry+https://github.com/rust-lang/crates.io-index)" = "796fba70e76612589ed2ce7f45282f5af869e0fdd7cc6199fa1aa1f1d591ba9d"
+"checksum minimp3-sys 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)" = "da62cbca73b5e6ea4bb17214bc23ba9d16d69dcaa03765c7455cd5e4698bc04b"
 "checksum nom 3.2.1 (registry+https://github.com/rust-lang/crates.io-index)" = "05aec50c70fd288702bcd93284a8444607f3292dbdf2a30de5ea5dcdbe72287b"
 "checksum peeking_take_while 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)" = "19b17cddbe7ec3f8bc800887bab5e717348c95ea2ca0b1bf0837fb964dc67099"
 "checksum proc-macro2 0.3.5 (registry+https://github.com/rust-lang/crates.io-index)" = "77997c53ae6edd6d187fec07ec41b207063b5ee6f33680e9fa86d405cdd313d4"
