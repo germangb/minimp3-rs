@@ -9,4 +9,3 @@ repository = "https://github.com/germangb/minimp3-rs.git"
 
 [build-dependencies]
 cc = "1.0"
-bindgen = "0.37.0"
