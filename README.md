@@ -10,5 +10,5 @@
 # Cargo.toml
 
 [dependencies]
-minimp3 = "0.1.0"
+minimp3 = "0.3.0"
 ```
