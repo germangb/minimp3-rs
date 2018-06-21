@@ -18,15 +18,15 @@ dependencies = [
 
 [[package]]
 name = "minimp3"
-version = "0.2.0"
+version = "0.3.0"
 dependencies = [
- "minimp3-sys 0.2.0",
+ "minimp3-sys 0.3.0",
  "slice-deque 0.1.8 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
 name = "minimp3-sys"
-version = "0.2.0"
+version = "0.3.0"
 dependencies = [
  "cc 1.0.17 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
