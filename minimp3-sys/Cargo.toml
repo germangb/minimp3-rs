@@ -1,11 +1,13 @@
 [package]
 name = "minimp3-sys"
-version = "0.3.0"
+version = "0.3.1"
 authors = ["germän gômez <germangb42@gmail.com>", "Erin Moon <erin@hashbang.sh>"]
 license = "MIT"
 categories = ["external-ffi-bindings"]
 description = "Rust bindings for the minimp3 library."
 repository = "https://github.com/germangb/minimp3-rs.git"
+
+exclude = ["minimp3/vectors/*", "minimp3/player/*"]
 
 [build-dependencies]
 cc = "1.0"
