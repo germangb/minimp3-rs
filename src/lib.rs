@@ -73,17 +73,21 @@ where
     pub fn next_frame(&mut self) -> Result<Frame, Error> {
         loop {
             // Keep our buffers full
+            let mut bytes_read = None;
             if self.buffer.len() < REFILL_TRIGGER {
-                if self.refill()? == 0 {
-                    return Err(Error::Eof);
-                }
+                bytes_read = Some(self.refill()?);
             }
 
             match self.decode_frame() {
                 Ok(frame) => return Ok(frame),
                 // Don't do anything if we didn't have enough data or we skipped data,
                 // just let the loop spin around another time.
-                Err(Error::InsufficientData) | Err(Error::SkippedData) => {},
+                Err(Error::InsufficientData) | Err(Error::SkippedData) => {
+                    // If there are no more bytes to be read from the file, return EOF
+                    if let Some(0) = bytes_read {
+                        return Err(Error::Eof);
+                    }
+                },
                 Err(e) => return Err(e),
             }
         }
