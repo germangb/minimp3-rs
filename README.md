@@ -16,19 +16,21 @@ minimp3 = "0.3"
 ```rust
 extern crate minimp3;
 
-use minimp3::{Decoder, Frame};
+use minimp3::{Decoder, Frame, Error};
 
-use std::error::Error;
 use std::fs::File;
 
-fn main() -> Result<(), Box<Error>> {
-    let mut decoder = Decoder::new(File::open("audio_file.mp3")?);
+fn main() {
+    let mut decoder = Decoder::new(File::open("audio_file.mp3").unwrap());
 
     loop {
-        // Keep decoding frames until EOF is reached
-        let Frame { data, sample_rate, channels, .. } = decoder.next_frame()?;
+        match decoder.next_frame() {
+            Ok(Frame { data, sample_rate, channels, .. }) => {
+                println!("Decoded {} samples", data.len() / channels)
+            },
+            Err(Error::Eof) => break,
+            Err(e) => panic!("{:?}", e),
+        }
     }
-
-    unreachable!()
 }
 ```
