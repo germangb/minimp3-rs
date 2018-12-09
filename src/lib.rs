@@ -73,10 +73,11 @@ where
     pub fn next_frame(&mut self) -> Result<Frame, Error> {
         loop {
             // Keep our buffers full
-            let mut bytes_read = None;
-            if self.buffer.len() < REFILL_TRIGGER {
-                bytes_read = Some(self.refill()?);
-            }
+            let bytes_read = if self.buffer.len() < REFILL_TRIGGER {
+                Some(self.refill()?)
+            } else {
+                None
+            };
 
             match self.decode_frame() {
                 Ok(frame) => return Ok(frame),
