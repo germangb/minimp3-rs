@@ -18,10 +18,7 @@ const REFILL_TRIGGER: usize = MAX_SAMPLES_PER_FRAME * 8;
 /// A MP3 decoder which consumes a reader and produces [`Frame`]s.
 ///
 /// [`Frame`]: ./struct.Frame.html
-pub struct Decoder<R>
-where
-    R: Read,
-{
+pub struct Decoder<R> {
     reader: R,
     buffer: SliceDeque<u8>,
     decoder: Box<ffi::mp3dec_t>,
@@ -30,11 +27,7 @@ where
 // Explicitly impl [Send] for [Decoder]s. This isn't a great idea and should probably be removed in the future.
 // The only reason it's here is that [SliceDeque] doesn't implement [Send] (since it uses raw pointers internally),
 // even though it's safe to send it across thread boundaries.
-unsafe impl<R> Send for Decoder<R>
-where
-    R: Read,
-{
-}
+unsafe impl<R: Send> Send for Decoder<R> {}
 
 /// A MP3 frame, owning the decoded audio of that frame.
 pub struct Frame {
@@ -88,7 +81,7 @@ where
                     if let Some(0) = bytes_read {
                         return Err(Error::Eof);
                     }
-                },
+                }
                 Err(e) => return Err(e),
             }
         }
