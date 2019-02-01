@@ -87,6 +87,14 @@ where
         }
     }
 
+    pub fn reader(&self) -> &R {
+        &self.reader
+    }
+
+    pub fn reader_mut(&mut self) -> &mut R {
+        &mut self.reader
+    }
+
     fn decode_frame(&mut self) -> Result<Frame, Error> {
         let mut frame_info = unsafe { mem::zeroed() };
         let mut pcm = Vec::with_capacity(MAX_SAMPLES_PER_FRAME);
