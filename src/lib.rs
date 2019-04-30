@@ -140,7 +140,7 @@ where
     fn refill(&mut self) -> Result<usize, io::Error> {
         let mut dat: [u8; MAX_SAMPLES_PER_FRAME * 5] = [0; MAX_SAMPLES_PER_FRAME * 5];
         let read_bytes = self.reader.read(&mut dat)?;
-        self.buffer.extend(dat.iter());
+        self.buffer.extend(dat[..read_bytes].iter());
 
         Ok(read_bytes)
     }
