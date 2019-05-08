@@ -1,6 +1,6 @@
 [package]
 name = "minimp3"
-version = "0.3.2"
+version = "0.3.3"
 authors = ["germän gômez <germangb42@gmail.com>", "Erin Moon <erin@hashbang.sh>"]
 description = "Rust bindings for the minimp3 library."
 keywords = ["mp3", "audio", "decoder", "mpeg", "media"]
@@ -10,7 +10,4 @@ repository = "https://github.com/germangb/minimp3-rs.git"
 
 [dependencies]
 slice-deque = "0.2.0"
-minimp3-sys = "0.3"
-
-[patch.crates-io]
-minimp3-sys = { path = "minimp3-sys" }
+minimp3-sys = { version = "0.3", path = "minimp3-sys" }
