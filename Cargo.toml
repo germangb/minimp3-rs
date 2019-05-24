@@ -9,5 +9,5 @@ license = "MIT"
 repository = "https://github.com/germangb/minimp3-rs.git"
 
 [dependencies]
-slice-deque = "0.2.0"
+slice-deque = "0.2.4"
 minimp3-sys = { version = "0.3", path = "minimp3-sys" }
