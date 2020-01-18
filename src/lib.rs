@@ -1,4 +1,4 @@
-extern crate minimp3_sys as ffi;
+pub extern crate minimp3_sys as ffi;
 extern crate slice_deque;
 
 use slice_deque::SliceDeque;
