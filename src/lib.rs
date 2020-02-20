@@ -1,10 +1,11 @@
 pub extern crate minimp3_sys as ffi;
-extern crate slice_deque;
 
 use slice_deque::SliceDeque;
-use std::io::{self, Read};
-use std::marker::Send;
-use std::mem;
+use std::{
+    io::{self, Read},
+    marker::Send,
+    mem,
+};
 
 mod error;
 pub use error::Error;
@@ -30,6 +31,7 @@ pub struct Decoder<R> {
 unsafe impl<R: Send> Send for Decoder<R> {}
 
 /// A MP3 frame, owning the decoded audio of that frame.
+#[derive(Debug, Clone)]
 pub struct Frame {
     /// The decoded audio held by this frame. Channels are interleaved.
     pub data: Vec<i16>,

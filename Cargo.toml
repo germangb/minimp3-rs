@@ -7,6 +7,7 @@ keywords = ["mp3", "audio", "decoder", "mpeg", "media"]
 categories = ["multimedia", "multimedia::audio"]
 license = "MIT"
 repository = "https://github.com/germangb/minimp3-rs.git"
+edition = "2018"
 
 [dependencies]
 slice-deque = "0.2.4"
