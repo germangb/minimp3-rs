@@ -6,7 +6,7 @@
 //!
 //! By enabling the feature flag `async_tokio` you can decode frames using async IO and tokio.
 //!
-//! [See the README for example usages.](https://github.com/germangb/minimp3-rs/tree/add-license-1)
+//! [See the README for example usages.](https://github.com/germangb/minimp3-rs/tree/async)
 pub extern crate minimp3_sys as ffi;
 
 use std::{

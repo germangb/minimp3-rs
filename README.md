@@ -37,7 +37,7 @@ fn main() {
 
 ## Async I/O
 
-The crate can be build with the `async_tokio` feature flag to be used with [`tokio`](https://tokio.rs/).
+The decoder can be used with Tokio via the `async_tokio` feature flag.
 
 ```toml
 # Cargo.toml
@@ -60,7 +60,7 @@ async fn main() {
     let mut decoder = Decoder::new(file);
 
     loop {
-        match decoder.next_frame().await {
+        match decoder.next_frame_future().await {
             Ok(Frame {
                    data,
                    sample_rate,
