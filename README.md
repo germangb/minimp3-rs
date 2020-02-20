@@ -10,7 +10,7 @@
 # Cargo.toml
 
 [dependencies]
-minimp3 = "0.3"
+minimp3 = "0.4"
 ```
 
 ```rust
@@ -43,7 +43,7 @@ The decoder can be used with Tokio via the `async_tokio` feature flag.
 # Cargo.toml
 
 [dependencies]
-minimp3 = { version = "0.3", features = "async_tokio" }
+minimp3 = { version = "0.4", features = "async_tokio" }
 
 # tokio runtime
 tokio = {version = "0.2", features = ["full"] }
