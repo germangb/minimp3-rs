@@ -14,8 +14,6 @@ minimp3 = "0.4"
 ```
 
 ```rust
-extern crate minimp3;
-
 use minimp3::{Decoder, Frame, Error};
 
 use std::fs::File;

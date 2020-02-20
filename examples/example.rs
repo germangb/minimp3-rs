@@ -1,5 +1,3 @@
-extern crate minimp3;
-
 use minimp3::{Decoder, Error, Frame};
 
 use std::fs::File;

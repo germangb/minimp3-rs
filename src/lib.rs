@@ -9,11 +9,7 @@
 //! [See the README for example usages.](https://github.com/germangb/minimp3-rs/tree/async)
 pub extern crate minimp3_sys as ffi;
 
-use std::{
-    io,
-    marker::Send,
-    mem,
-};
+use std::{io, marker::Send, mem};
 
 use slice_deque::SliceDeque;
 
@@ -121,7 +117,6 @@ impl<R> Decoder<R> {
         }
     }
 }
-
 
 #[cfg(feature = "async_tokio")]
 impl<R: tokio::io::AsyncRead + std::marker::Unpin> Decoder<R> {
