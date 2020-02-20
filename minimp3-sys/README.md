@@ -6,5 +6,5 @@
 How to manually generate minimp3 bindings using [**bindgen**](https://crates.io/crates/bindgen):
 
 ```bash
-bindgen --no-rustfmt-bindings wrapper.h -- -Iminimp3 > src/bindings.rs
+bindgen --no-rustfmt-bindings minimp3.c -- -Iminimp3 > src/bindings.rs
 ```
