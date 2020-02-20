@@ -10,5 +10,5 @@ repository = "https://github.com/germangb/minimp3-rs.git"
 edition = "2018"
 
 [dependencies]
-slice-deque = "0.2.4"
+slice-deque = "0.3.0"
 minimp3-sys = { version = "0.3", path = "minimp3-sys" }
