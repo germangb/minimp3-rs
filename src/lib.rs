@@ -1,14 +1,21 @@
+//! # minimp3
+//!
+//! Provides a simple wrapper and bindinings to the [minimp3](https://github.com/lieff/minimp3) C library.
+//!
+//! ## Tokio
+//!
+//! By enabling the feature flag `async_tokio` you can decode frames using async IO and tokio.
+//!
+//! [See the README for example usages.](https://github.com/germangb/minimp3-rs/tree/async)
 pub extern crate minimp3_sys as ffi;
 
+use std::{io, marker::Send, mem};
+
 use slice_deque::SliceDeque;
-use std::{
-    io::{self, Read},
-    marker::Send,
-    mem,
-};
+
+pub use error::Error;
 
 mod error;
-pub use error::Error;
 
 /// Maximum number of samples present in a MP3 frame.
 pub const MAX_SAMPLES_PER_FRAME: usize = ffi::MINIMP3_MAX_SAMPLES_PER_FRAME as usize;
@@ -45,54 +52,25 @@ pub struct Frame {
     pub bitrate: i32,
 }
 
-impl<R> Decoder<R>
-where
-    R: Read,
-{
+impl<R> Decoder<R> {
     /// Creates a new decoder, consuming the `reader`.
-    pub fn new(reader: R) -> Decoder<R> {
+    pub fn new(reader: R) -> Self {
         let mut minidec = unsafe { Box::new(mem::zeroed()) };
         unsafe { ffi::mp3dec_init(&mut *minidec) }
 
-        Decoder {
+        Self {
             reader,
             buffer: SliceDeque::with_capacity(BUFFER_SIZE),
             decoder: minidec,
         }
     }
 
-    /// Reads a new frame from the internal reader. Returns a [`Frame`] if one was found,
-    /// or, otherwise, an `Err` explaining why not.
-    ///
-    /// [`Frame`]: ./struct.Frame.html
-    pub fn next_frame(&mut self) -> Result<Frame, Error> {
-        loop {
-            // Keep our buffers full
-            let bytes_read = if self.buffer.len() < REFILL_TRIGGER {
-                Some(self.refill()?)
-            } else {
-                None
-            };
-
-            match self.decode_frame() {
-                Ok(frame) => return Ok(frame),
-                // Don't do anything if we didn't have enough data or we skipped data,
-                // just let the loop spin around another time.
-                Err(Error::InsufficientData) | Err(Error::SkippedData) => {
-                    // If there are no more bytes to be read from the file, return EOF
-                    if let Some(0) = bytes_read {
-                        return Err(Error::Eof);
-                    }
-                }
-                Err(e) => return Err(e),
-            }
-        }
-    }
-
+    /// Return the underlying reader.
     pub fn reader(&self) -> &R {
         &self.reader
     }
 
+    /// Return the underlying reader as mutable (reading from it is not recommended).
     pub fn reader_mut(&mut self) -> &mut R {
         &mut self.reader
     }
@@ -138,8 +116,83 @@ where
             Ok(frame)
         }
     }
+}
+
+#[cfg(feature = "async_tokio")]
+impl<R: tokio::io::AsyncRead + std::marker::Unpin> Decoder<R> {
+    /// Reads a new frame from the internal reader. Returns a [`Frame`] if one was found,
+    /// or, otherwise, an `Err` explaining why not.
+    ///
+    /// [`Frame`]: ./struct.Frame.html
+    pub async fn next_frame_future(&mut self) -> Result<Frame, Error> {
+        loop {
+            // Keep our buffers full
+            let bytes_read = if self.buffer.len() < REFILL_TRIGGER {
+                Some(self.refill_future().await?)
+            } else {
+                None
+            };
+
+            match self.decode_frame() {
+                Ok(frame) => return Ok(frame),
+                // Don't do anything if we didn't have enough data or we skipped data,
+                // just let the loop spin around another time.
+                Err(Error::InsufficientData) | Err(Error::SkippedData) => {
+                    // If there are no more bytes to be read from the file, return EOF
+                    if let Some(0) = bytes_read {
+                        return Err(Error::Eof);
+                    }
+                }
+                Err(e) => return Err(e),
+            }
+        }
+    }
+
+    async fn refill_future(&mut self) -> Result<usize, io::Error> {
+        use tokio::io::AsyncReadExt;
+
+        let mut dat: [u8; MAX_SAMPLES_PER_FRAME * 5] = [0; MAX_SAMPLES_PER_FRAME * 5];
+        let read_bytes = self.reader.read(&mut dat).await?;
+        self.buffer.extend(dat[..read_bytes].iter());
+
+        Ok(read_bytes)
+    }
+}
+
+// TODO FIXME do something about the code repetition. The only difference is the use of .await after IO reads...
+
+impl<R: std::io::Read> Decoder<R> {
+    /// Reads a new frame from the internal reader. Returns a [`Frame`] if one was found,
+    /// or, otherwise, an `Err` explaining why not.
+    ///
+    /// [`Frame`]: ./struct.Frame.html
+    pub fn next_frame(&mut self) -> Result<Frame, Error> {
+        loop {
+            // Keep our buffers full
+            let bytes_read = if self.buffer.len() < REFILL_TRIGGER {
+                Some(self.refill()?)
+            } else {
+                None
+            };
+
+            match self.decode_frame() {
+                Ok(frame) => return Ok(frame),
+                // Don't do anything if we didn't have enough data or we skipped data,
+                // just let the loop spin around another time.
+                Err(Error::InsufficientData) | Err(Error::SkippedData) => {
+                    // If there are no more bytes to be read from the file, return EOF
+                    if let Some(0) = bytes_read {
+                        return Err(Error::Eof);
+                    }
+                }
+                Err(e) => return Err(e),
+            }
+        }
+    }
 
     fn refill(&mut self) -> Result<usize, io::Error> {
+        use std::io::Read;
+
         let mut dat: [u8; MAX_SAMPLES_PER_FRAME * 5] = [0; MAX_SAMPLES_PER_FRAME * 5];
         let read_bytes = self.reader.read(&mut dat)?;
         self.buffer.extend(dat[..read_bytes].iter());
