@@ -15,7 +15,7 @@ minimp3-sys = { version = "0.3", path = "minimp3-sys" }
 tokio = { version = "0.2", features = ["io-util"], optional = true }
 
 [features]
-default = ["async_tokio"]
+default = []
 async_tokio = ["tokio"]
 
 [dev-dependencies]
