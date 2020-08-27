@@ -10,7 +10,7 @@
 # Cargo.toml
 
 [dependencies]
-minimp3 = "0.4"
+minimp3 = "0.5"
 ```
 
 ```rust

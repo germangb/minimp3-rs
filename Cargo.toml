@@ -1,6 +1,6 @@
 [package]
 name = "minimp3"
-version = "0.4.0"
+version = "0.5.0"
 authors = ["germän gômez <germangb42@gmail.com>", "Erin Moon <erin@hashbang.sh>"]
 description = "Rust bindings for the minimp3 library."
 keywords = ["mp3", "audio", "decoder", "mpeg", "media"]
