@@ -65,14 +65,19 @@ impl<R> Decoder<R> {
         }
     }
 
-    /// Return the underlying reader.
+    /// Return a reference to the underlying reader.
     pub fn reader(&self) -> &R {
         &self.reader
     }
 
-    /// Return the underlying reader as mutable (reading from it is not recommended).
+    /// Return a mutable reference to the underlying reader (reading from it is not recommended).
     pub fn reader_mut(&mut self) -> &mut R {
         &mut self.reader
+    }
+
+    /// Destroy the decoder and return the inner reader
+    pub fn into_inner(self) -> R {
+        self.reader
     }
 
     fn decode_frame(&mut self) -> Result<Frame, Error> {
