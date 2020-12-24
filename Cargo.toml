@@ -12,12 +12,12 @@ edition = "2018"
 [dependencies]
 slice-deque = "0.3.0"
 minimp3-sys = { version = "0.3", path = "minimp3-sys" }
-tokio = { version = "0.2", features = ["io-util"], optional = true }
+tokio = { version = "1.0", features = ["io-util"], optional = true }
 
 [features]
 default = []
 async_tokio = ["tokio"]
 
 [dev-dependencies]
-tokio = {version = "0.2", features = ["full"] }
+tokio = {version = "1.0", features = ["full"] }
 futures = "0.3.4"
