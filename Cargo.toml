@@ -1,6 +1,6 @@
 [package]
 name = "minimp3"
-version = "0.5.0"
+version = "0.5.1"
 authors = ["germän gômez <germangb42@gmail.com>", "Erin Moon <erin@hashbang.sh>"]
 description = "Rust bindings for the minimp3 library."
 keywords = ["mp3", "audio", "decoder", "mpeg", "media"]
@@ -12,12 +12,13 @@ edition = "2018"
 [dependencies]
 slice-deque = "0.3.0"
 minimp3-sys = { version = "0.3", path = "minimp3-sys" }
-tokio = { version = "0.2", features = ["io-util"], optional = true }
+tokio = { version = "1.0", features = ["io-util"], optional = true }
+thiserror = "1.0.23"
 
 [features]
 default = []
 async_tokio = ["tokio"]
 
 [dev-dependencies]
-tokio = {version = "0.2", features = ["full"] }
-futures = "0.3.4"
+tokio = { version = "1.0", features = ["full"] }
+futures = "0.3.8"

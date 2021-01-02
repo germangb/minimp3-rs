@@ -4,16 +4,15 @@
 //!
 //! ## Tokio
 //!
-//! By enabling the feature flag `async_tokio` you can decode frames using async IO and tokio.
+//! By enabling the feature flag `async_tokio` you can decode frames using async
+//! IO and tokio.
 //!
 //! [See the README for example usages.](https://github.com/germangb/minimp3-rs/tree/async)
-pub extern crate minimp3_sys as ffi;
-
-use std::{io, marker::Send, mem};
+pub use error::Error;
+pub use minimp3_sys as ffi;
 
 use slice_deque::SliceDeque;
-
-pub use error::Error;
+use std::{io, marker::Send, mem};
 
 mod error;
 
@@ -29,12 +28,14 @@ const REFILL_TRIGGER: usize = MAX_SAMPLES_PER_FRAME * 8;
 pub struct Decoder<R> {
     reader: R,
     buffer: SliceDeque<u8>,
+    buffer_refill: Box<[u8; MAX_SAMPLES_PER_FRAME * 5]>,
     decoder: Box<ffi::mp3dec_t>,
 }
 
-// Explicitly impl [Send] for [Decoder]s. This isn't a great idea and should probably be removed in the future.
-// The only reason it's here is that [SliceDeque] doesn't implement [Send] (since it uses raw pointers internally),
-// even though it's safe to send it across thread boundaries.
+// Explicitly impl [Send] for [Decoder]s. This isn't a great idea and should
+// probably be removed in the future. The only reason it's here is that
+// [SliceDeque] doesn't implement [Send] (since it uses raw pointers
+// internally), even though it's safe to send it across thread boundaries.
 unsafe impl<R: Send> Send for Decoder<R> {}
 
 /// A MP3 frame, owning the decoded audio of that frame.
@@ -61,6 +62,7 @@ impl<R> Decoder<R> {
         Self {
             reader,
             buffer: SliceDeque::with_capacity(BUFFER_SIZE),
+            buffer_refill: Box::new([0; MAX_SAMPLES_PER_FRAME * 5]),
             decoder: minidec,
         }
     }
@@ -70,7 +72,8 @@ impl<R> Decoder<R> {
         &self.reader
     }
 
-    /// Return a mutable reference to the underlying reader (reading from it is not recommended).
+    /// Return a mutable reference to the underlying reader (reading from it is
+    /// not recommended).
     pub fn reader_mut(&mut self) -> &mut R {
         &mut self.reader
     }
@@ -125,10 +128,8 @@ impl<R> Decoder<R> {
 
 #[cfg(feature = "async_tokio")]
 impl<R: tokio::io::AsyncRead + std::marker::Unpin> Decoder<R> {
-    /// Reads a new frame from the internal reader. Returns a [`Frame`] if one was found,
-    /// or, otherwise, an `Err` explaining why not.
-    ///
-    /// [`Frame`]: ./struct.Frame.html
+    /// Reads a new frame from the internal reader. Returns a [`Frame`](Frame)
+    /// if one was found, or, otherwise, an `Err` explaining why not.
     pub async fn next_frame_future(&mut self) -> Result<Frame, Error> {
         loop {
             // Keep our buffers full
@@ -156,21 +157,19 @@ impl<R: tokio::io::AsyncRead + std::marker::Unpin> Decoder<R> {
     async fn refill_future(&mut self) -> Result<usize, io::Error> {
         use tokio::io::AsyncReadExt;
 
-        let mut dat: [u8; MAX_SAMPLES_PER_FRAME * 5] = [0; MAX_SAMPLES_PER_FRAME * 5];
-        let read_bytes = self.reader.read(&mut dat).await?;
-        self.buffer.extend(dat[..read_bytes].iter());
+        let read_bytes = self.reader.read(&mut self.buffer_refill[..]).await?;
+        self.buffer.extend(self.buffer_refill[..read_bytes].iter());
 
         Ok(read_bytes)
     }
 }
 
-// TODO FIXME do something about the code repetition. The only difference is the use of .await after IO reads...
+// TODO FIXME do something about the code repetition. The only difference is the
+//  use of .await after IO reads...
 
-impl<R: std::io::Read> Decoder<R> {
-    /// Reads a new frame from the internal reader. Returns a [`Frame`] if one was found,
-    /// or, otherwise, an `Err` explaining why not.
-    ///
-    /// [`Frame`]: ./struct.Frame.html
+impl<R: io::Read> Decoder<R> {
+    /// Reads a new frame from the internal reader. Returns a [`Frame`](Frame)
+    /// if one was found, or, otherwise, an `Err` explaining why not.
     pub fn next_frame(&mut self) -> Result<Frame, Error> {
         loop {
             // Keep our buffers full
@@ -196,11 +195,8 @@ impl<R: std::io::Read> Decoder<R> {
     }
 
     fn refill(&mut self) -> Result<usize, io::Error> {
-        use std::io::Read;
-
-        let mut dat: [u8; MAX_SAMPLES_PER_FRAME * 5] = [0; MAX_SAMPLES_PER_FRAME * 5];
-        let read_bytes = self.reader.read(&mut dat)?;
-        self.buffer.extend(dat[..read_bytes].iter());
+        let read_bytes = self.reader.read(&mut self.buffer_refill[..])?;
+        self.buffer.extend(self.buffer_refill[..read_bytes].iter());
 
         Ok(read_bytes)
     }
