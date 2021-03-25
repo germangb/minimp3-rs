@@ -12,7 +12,7 @@ pub use error::Error;
 pub use minimp3_sys as ffi;
 
 use slice_deque::SliceDeque;
-use std::{io, marker::Send, mem};
+use std::{io, marker::Send, mem, ops};
 
 mod error;
 
@@ -38,11 +38,61 @@ pub struct Decoder<R> {
 // internally), even though it's safe to send it across thread boundaries.
 unsafe impl<R: Send> Send for Decoder<R> {}
 
+/// A collection of pcm data decoded from a frame.
+///
+/// The data is stored in a channel interleaved fashion. You'll have to look at
+/// the associated [`FrameInfo`](FrameInfo) to determine its structured. It
+/// provides access to the underlying data by dereferencing to `&[i16]`.
+///
+/// This is provided for use with
+/// [`Decoder::decode_frame_into`](Decoder::decode_frame_into) which allows for
+/// re-using the buffer used for decoding data.
+///
+/// ```rust
+/// let pcm = minimp3::Pcm::new();
+///
+/// assert_eq!(&pcm[..], &[]);
+/// ```
+#[derive(Debug)]
+pub struct Pcm {
+    data: Vec<i16>,
+}
+
+impl Pcm {
+    /// Construct a new re-usable pcm data buffer.
+    pub fn new() -> Self {
+        Self {
+            data: Vec::with_capacity(MAX_SAMPLES_PER_FRAME),
+        }
+    }
+}
+
+impl ops::Deref for Pcm {
+    type Target = [i16];
+
+    fn deref(&self) -> &Self::Target {
+        &self.data
+    }
+}
+
 /// A MP3 frame, owning the decoded audio of that frame.
 #[derive(Debug, Clone)]
 pub struct Frame {
     /// The decoded audio held by this frame. Channels are interleaved.
     pub data: Vec<i16>,
+    /// This frame's sample rate in hertz.
+    pub sample_rate: i32,
+    /// The number of channels in this frame.
+    pub channels: usize,
+    /// MPEG layer used by this file.
+    pub layer: usize,
+    /// Current bitrate as of this frame, in kb/s.
+    pub bitrate: i32,
+}
+
+/// A MP3 frame, referencing the decoded audio of that frame.
+#[derive(Debug, Clone)]
+pub struct FrameInfo {
     /// This frame's sample rate in hertz.
     pub sample_rate: i32,
     /// The number of channels in this frame.
@@ -83,27 +133,26 @@ impl<R> Decoder<R> {
         self.reader
     }
 
-    fn decode_frame(&mut self) -> Result<Frame, Error> {
+    /// Decode a frame using a preallocated [Pcm] buffer.
+    fn decode_frame(&mut self, pcm: &mut Pcm) -> Result<FrameInfo, Error> {
         let mut frame_info = unsafe { mem::zeroed() };
-        let mut pcm = Vec::with_capacity(MAX_SAMPLES_PER_FRAME);
         let samples: usize = unsafe {
             ffi::mp3dec_decode_frame(
                 &mut *self.decoder,
                 self.buffer.as_ptr(),
                 self.buffer.len() as _,
-                pcm.as_mut_ptr(),
+                pcm.data.as_mut_ptr(),
                 &mut frame_info,
             ) as _
         };
 
         if samples > 0 {
             unsafe {
-                pcm.set_len(samples * frame_info.channels as usize);
+                pcm.data.set_len(samples * frame_info.channels as usize);
             }
         }
 
-        let frame = Frame {
-            data: pcm,
+        let frame = FrameInfo {
             sample_rate: frame_info.hz,
             channels: frame_info.channels as usize,
             layer: frame_info.layer as usize,
@@ -131,6 +180,25 @@ impl<R: tokio::io::AsyncRead + std::marker::Unpin> Decoder<R> {
     /// Reads a new frame from the internal reader. Returns a [`Frame`](Frame)
     /// if one was found, or, otherwise, an `Err` explaining why not.
     pub async fn next_frame_future(&mut self) -> Result<Frame, Error> {
+        let mut pcm = Pcm::new();
+        let frame = self.next_frame_with_pcm_future(&mut pcm).await?;
+
+        Ok(Frame {
+            data: pcm.data,
+            sample_rate: frame.sample_rate,
+            channels: frame.channels,
+            layer: frame.layer,
+            bitrate: frame.bitrate,
+        })
+    }
+
+    /// Reads a new frame from the internal reader. Returns a [`Frame`](Frame)
+    /// if one was found, or, otherwise, an `Err` explaining why not.
+    ///
+    /// This requires a buffer to be provided through `pcm` which can be
+    /// re-used. This dereferences to `&[i16]` which is a slice containing the
+    /// decoded frame data.
+    pub async fn next_frame_with_pcm_future(&mut self, pcm: &mut Pcm) -> Result<FrameInfo, Error> {
         loop {
             // Keep our buffers full
             let bytes_read = if self.buffer.len() < REFILL_TRIGGER {
@@ -139,7 +207,7 @@ impl<R: tokio::io::AsyncRead + std::marker::Unpin> Decoder<R> {
                 None
             };
 
-            match self.decode_frame() {
+            match self.decode_frame(pcm) {
                 Ok(frame) => return Ok(frame),
                 // Don't do anything if we didn't have enough data or we skipped data,
                 // just let the loop spin around another time.
@@ -171,6 +239,26 @@ impl<R: io::Read> Decoder<R> {
     /// Reads a new frame from the internal reader. Returns a [`Frame`](Frame)
     /// if one was found, or, otherwise, an `Err` explaining why not.
     pub fn next_frame(&mut self) -> Result<Frame, Error> {
+        let mut pcm = Pcm::new();
+        let frame = self.next_frame_with_pcm(&mut pcm)?;
+
+        Ok(Frame {
+            data: pcm.data,
+            sample_rate: frame.sample_rate,
+            channels: frame.channels,
+            layer: frame.layer,
+            bitrate: frame.bitrate,
+        })
+    }
+
+    /// Reads a new frame from the internal reader. Returns a
+    /// [`FrameInfo`](FrameInfo) if one was found, or, otherwise, an `Err`
+    /// explaining why not.
+    ///
+    /// This requires a buffer to be provided through `pcm` which can be
+    /// re-used. This dereferences to `&[i16]` which is a slice containing the
+    /// decoded frame data.
+    pub fn next_frame_with_pcm(&mut self, pcm: &mut Pcm) -> Result<FrameInfo, Error> {
         loop {
             // Keep our buffers full
             let bytes_read = if self.buffer.len() < REFILL_TRIGGER {
@@ -179,7 +267,7 @@ impl<R: io::Read> Decoder<R> {
                 None
             };
 
-            match self.decode_frame() {
+            match self.decode_frame(pcm) {
                 Ok(frame) => return Ok(frame),
                 // Don't do anything if we didn't have enough data or we skipped data,
                 // just let the loop spin around another time.
