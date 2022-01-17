@@ -11,7 +11,7 @@
 pub use error::Error;
 pub use minimp3_sys as ffi;
 
-use slice_deque::SliceDeque;
+use slice_ring_buffer::SliceRingBuffer;
 use std::{io, marker::Send, mem};
 
 mod error;
@@ -27,14 +27,14 @@ const REFILL_TRIGGER: usize = MAX_SAMPLES_PER_FRAME * 8;
 /// [`Frame`]: ./struct.Frame.html
 pub struct Decoder<R> {
     reader: R,
-    buffer: SliceDeque<u8>,
+    buffer: SliceRingBuffer<u8>,
     buffer_refill: Box<[u8; MAX_SAMPLES_PER_FRAME * 5]>,
     decoder: Box<ffi::mp3dec_t>,
 }
 
 // Explicitly impl [Send] for [Decoder]s. This isn't a great idea and should
 // probably be removed in the future. The only reason it's here is that
-// [SliceDeque] doesn't implement [Send] (since it uses raw pointers
+// [SliceRingBuffer] doesn't implement [Send] (since it uses raw pointers
 // internally), even though it's safe to send it across thread boundaries.
 unsafe impl<R: Send> Send for Decoder<R> {}
 
@@ -61,7 +61,7 @@ impl<R> Decoder<R> {
 
         Self {
             reader,
-            buffer: SliceDeque::with_capacity(BUFFER_SIZE),
+            buffer: SliceRingBuffer::with_capacity(BUFFER_SIZE),
             buffer_refill: Box::new([0; MAX_SAMPLES_PER_FRAME * 5]),
             decoder: minidec,
         }
