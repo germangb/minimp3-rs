@@ -18,6 +18,7 @@ thiserror = "1.0.23"
 [features]
 default = []
 async_tokio = ["tokio"]
+unix_sysv = ["slice-ring-buffer/unix_sysv"]
 
 [dev-dependencies]
 tokio = { version = "1.0", features = ["full"] }
