@@ -8,12 +8,9 @@ fn main() {
 
     loop {
         match decoder.next_frame() {
-            Ok(Frame {
-                data,
-                sample_rate,
-                channels,
-                ..
-            }) => println!("Decoded {} samples", data.len() / channels),
+            Ok(Frame { data, channels, .. }) => {
+                println!("Decoded {} samples", data.len() / channels)
+            }
             Err(Error::Eof) => break,
             Err(e) => panic!("{:?}", e),
         }
