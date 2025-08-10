@@ -1,0 +1,68 @@
+name: Build
+
+on:
+  merge_group:
+  pull_request:
+  push:
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  style:
+    name: Code style
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - name: Setup Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: stable
+          components: rustfmt, clippy
+      - uses: Swatinem/rust-cache@v2
+      - name: cargo fmt
+        run: cargo fmt -- --check
+      - name: cargo clippy
+        run: cargo clippy --all-targets --all-features
+
+  build:
+    name: Build (regular)
+    strategy:
+      fail-fast: false
+      matrix:
+        runs-on: [ macos-latest, ubuntu-latest, windows-latest ]
+        rust: [
+          # MSRV
+          1.85.0,
+          stable,
+          nightly
+        ]
+    runs-on: ${{ matrix.runs-on }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - name: Setup Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: ${{ matrix.rust }}
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: "${{ matrix.runs-on }}-${{ matrix.rust }}"
+      #- name: cargo check (no_std)
+      #  run: |
+      #    # add some nostd target
+      #    rustup target add thumbv7em-none-eabihf
+      #    cargo check --no-default-features --target thumbv7em-none-eabihf
+      - name: cargo build (no default features)
+        run: cargo build --no-default-features
+      - name: cargo build (default features)
+        run: cargo build
+      - name: cargo build (all features)
+        run: cargo build --all-features
+      - name: cargo test (no default features)
+        run: cargo test --no-default-features
+      - name: cargo test
+        run: cargo test

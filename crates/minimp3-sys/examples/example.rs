@@ -1,7 +1,6 @@
 extern crate minimp3_sys;
 
-use std::io;
-use std::mem;
+use std::{io, mem};
 
 use std::io::Write;
 
@@ -51,7 +50,7 @@ fn main() {
             use std::slice;
 
             let slice = slice::from_raw_parts(pcm.as_ptr() as _, samples * 2);
-            stdout.write(slice).unwrap();
+            let _ = stdout.write(slice).unwrap();
         }
     }
 }

@@ -1,24 +1,14 @@
-[package]
-name = "minimp3"
-version = "0.5.2"
-authors = ["germän gômez <germangb42@gmail.com>", "Erin Moon <erin@hashbang.sh>"]
-description = "Rust bindings for the minimp3 library."
-keywords = ["mp3", "audio", "decoder", "mpeg", "media"]
-categories = ["multimedia", "multimedia::audio"]
-license = "MIT"
-repository = "https://github.com/germangb/minimp3-rs.git"
-edition = "2018"
+[workspace]
+resolver = "3"
+package.edition = "2024"
+package.license = "MIT"
+package.rust-version = "1.85"
+members = [
+  "crates/minimp3",
+  "crates/minimp3-sys",
+]
 
-[dependencies]
-slice-ring-buffer = "0.3.0"
-minimp3-sys = { version = "0.3", path = "minimp3-sys" }
-tokio = { version = "1.0", features = ["io-util"], optional = true }
-thiserror = "1.0.23"
 
-[features]
-default = []
-async_tokio = ["tokio"]
-
-[dev-dependencies]
-tokio = { version = "1.0", features = ["full"] }
-futures = "0.3.8"
+# Override dependency to use the local version for development.
+[patch.crates-io]
+minimp3-sys = { path = "crates/minimp3-sys" }
