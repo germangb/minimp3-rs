@@ -1,16 +1,19 @@
 [package]
 name = "minimp3-sys"
 description = "Rust bindings for the minimp3 library."
-version = "0.4.0"
+version = "0.6.0"
 authors = [
     "germän gômez <germangb42@gmail.com>",
     "Erin Moon <erin@hashbang.sh>",
     "Philipp Schuster <phip1611@gmail.com",
 ]
 categories = ["external-ffi-bindings"]
+keywords = ["mp3"]
 repository = "https://github.com/germangb/minimp3-rs.git"
-license = "MIT"
-edition = "2024"
+readme = "README.md"
+license.workspace = true
+edition.workspace = true
+rust-version.workspace = true
 
 exclude = ["minimp3/vectors/*", "minimp3/player/*"]
 

@@ -1,0 +1,31 @@
+[package]
+name = "minimp3"
+description = "Rust bindings and high-level wrapper for the minimp3 library."
+version = "0.6.0"
+authors = [
+  "germän gômez <germangb42@gmail.com>",
+  "Erin Moon <erin@hashbang.sh>",
+  "Philipp Schuster <phip1611@gmail.com",
+]
+keywords = ["mp3", "audio", "decoder", "mpeg", "media"]
+categories = ["multimedia", "multimedia::audio"]
+repository = "https://github.com/germangb/minimp3-rs.git"
+readme = "README.md"
+license.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+slice-ring-buffer = "0.3.0"
+minimp3-sys = { version = "0.3" }
+tokio = { version = "1.0", features = ["io-util"], optional = true }
+thiserror = "1.0.23"
+
+[features]
+default = []
+async_tokio = ["dep:tokio"]
+
+[dev-dependencies]
+tokio = { version = "1.0", features = ["full"] }
+futures = "0.3.8"
+
