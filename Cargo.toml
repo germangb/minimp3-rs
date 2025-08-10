@@ -1,13 +1,17 @@
 [package]
 name = "minimp3"
-version = "0.5.2"
-authors = ["germän gômez <germangb42@gmail.com>", "Erin Moon <erin@hashbang.sh>"]
-description = "Rust bindings for the minimp3 library."
+description = "Rust bindings and high-level wrapper for the minimp3 library."
+version = "0.6.0"
+authors = [
+    "germän gômez <germangb42@gmail.com>",
+    "Erin Moon <erin@hashbang.sh>",
+    "Philipp Schuster <phip1611@gmail.com",
+]
 keywords = ["mp3", "audio", "decoder", "mpeg", "media"]
 categories = ["multimedia", "multimedia::audio"]
 license = "MIT"
 repository = "https://github.com/germangb/minimp3-rs.git"
-edition = "2018"
+edition = "2024"
 
 [dependencies]
 slice-ring-buffer = "0.3.0"

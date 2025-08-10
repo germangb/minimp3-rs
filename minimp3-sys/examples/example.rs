@@ -1,7 +1,6 @@
 extern crate minimp3_sys;
 
-use std::io;
-use std::mem;
+use std::{io, mem};
 
 use std::io::Write;
 
