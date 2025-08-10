@@ -1,13 +1,17 @@
 //! # minimp3
+//! Rust bindings and high-level wrapper for the [minimp3] library.
 //!
-//! Provides a simple wrapper and bindinings to the [minimp3](https://github.com/lieff/minimp3) C library.
+//! As the C library is a header-only library, it is not necessary to link any
+//! C library statically or dynamically.
 //!
 //! ## Tokio
 //!
 //! By enabling the feature flag `async_tokio` you can decode frames using async
 //! IO and tokio.
 //!
-//! [See the README for example usages.](https://github.com/germangb/minimp3-rs/tree/async)
+//! [See the README for example usages.](https://github.com/germangb/minimp3-rs/blob/master/examples/example_tokio.rs)
+//!
+//! [minimp3]: https://github.com/lieff/minimp3
 
 #![deny(
     clippy::all,

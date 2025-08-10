@@ -1,10 +1,15 @@
 # minimp3-rs
 
-Rust bindings and high-level wrapper for the minimp3 library.
+Rust bindings and high-level wrapper for the [minimp3] library.
+
+As the C library is a header-only library, it is not necessary to link any
+C library statically or dynamically.
 
 [![Cargo package](https://img.shields.io/crates/v/minimp3.svg)](https://crates.io/crates/minimp3)
 [![Cargo package](https://img.shields.io/crates/d/minimp3.svg)](https://crates.io/crates/minimp3)
 [![Build Status](https://travis-ci.org/germangb/minimp3-rs.svg?branch=master)](https://travis-ci.org/germangb/minimp3-rs)
+
+[minimp3]: https://github.com/lieff/minimp3
 
 ## Usage example
 
