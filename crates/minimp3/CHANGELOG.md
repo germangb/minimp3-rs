@@ -1,0 +1,9 @@
+# CHANGELOG for minimp3
+
+## v0.6.0 (2025-08-10)
+- MSRV is now 1.85
+- Rust edition is now 2024
+- Modernized crate, code improvements
+
+## v0.5.2 (2025-08-10)
+- Bug fix for: Unsafe precondition(s) violated: slice::get_unchecked_mut index not within slice
