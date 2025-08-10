@@ -7,7 +7,7 @@ authors = [
     "Erin Moon <erin@hashbang.sh>",
     "Philipp Schuster <phip1611@gmail.com",
 ]
-categories = ["external-ffi-bindings"]
+categories = ["external-ffi-bindings", "no-std", "no-std::no-alloc"]
 keywords = ["mp3"]
 repository = "https://github.com/germangb/minimp3-rs.git"
 readme = "README.md"

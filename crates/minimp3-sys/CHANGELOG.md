@@ -4,3 +4,4 @@
 - MSRV is now 1.85
 - Rust edition is now 2024
 - Modernized crate, code improvements
+- `no_std`

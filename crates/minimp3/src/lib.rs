@@ -1,5 +1,6 @@
 //! # minimp3
-//! Rust bindings and high-level wrapper for the [minimp3] library.
+//! Rust bindings with a high-level wrapper for the [minimp3]
+//! C library.
 //!
 //! As the C library is a header-only library, it is not necessary to link any
 //! C library statically or dynamically.
@@ -30,12 +31,21 @@
 )]
 #![deny(missing_debug_implementations)]
 #![deny(rustdoc::all)]
+#![no_std]
+
+extern crate alloc;
+#[cfg(feature = "std")]
+extern crate std;
 
 pub use error::Error;
 pub use minimp3_sys as ffi;
 
+use alloc::boxed::Box;
+use alloc::vec::Vec;
+use core::mem;
 use slice_ring_buffer::SliceRingBuffer;
-use std::{io, marker::Send, mem};
+#[cfg(feature = "std")]
+use std::io;
 
 mod error;
 
@@ -189,6 +199,7 @@ impl<R: tokio::io::AsyncRead + std::marker::Unpin> Decoder<R> {
 // TODO FIXME do something about the code repetition. The only difference is the
 //  use of .await after IO reads...
 
+#[cfg(feature = "std")]
 impl<R: io::Read> Decoder<R> {
     /// Reads a new frame from the internal reader. Returns a [`Frame`]
     /// if one was found, or, otherwise, an `Err` explaining why not.

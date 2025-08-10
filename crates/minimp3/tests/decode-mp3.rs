@@ -1,7 +1,11 @@
-use minimp3::{Decoder, Error, Frame};
-use std::io::Cursor;
+#[cfg(feature = "std")]
+use {
+    minimp3::{Decoder, Error, Frame},
+    std::io::Cursor,
+};
 
 #[test]
+#[cfg(feature = "std")]
 fn decode_test_mp3() {
     let file = include_bytes!("../../../res/test.mp3");
     let file = Cursor::new(file);

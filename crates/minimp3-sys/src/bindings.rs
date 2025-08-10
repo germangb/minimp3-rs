@@ -99,18 +99,18 @@ pub const SIZE_MAX: i32 = -1;
 pub const WINT_MIN: u32 = 0;
 pub const WINT_MAX: u32 = 4294967295;
 pub const MINIMP3_MAX_SAMPLES_PER_FRAME: u32 = 2304;
-pub type __u_char = ::std::os::raw::c_uchar;
-pub type __u_short = ::std::os::raw::c_ushort;
-pub type __u_int = ::std::os::raw::c_uint;
-pub type __u_long = ::std::os::raw::c_ulong;
-pub type __int8_t = ::std::os::raw::c_schar;
-pub type __uint8_t = ::std::os::raw::c_uchar;
-pub type __int16_t = ::std::os::raw::c_short;
-pub type __uint16_t = ::std::os::raw::c_ushort;
-pub type __int32_t = ::std::os::raw::c_int;
-pub type __uint32_t = ::std::os::raw::c_uint;
-pub type __int64_t = ::std::os::raw::c_long;
-pub type __uint64_t = ::std::os::raw::c_ulong;
+pub type __u_char = ::core::ffi::c_uchar;
+pub type __u_short = ::core::ffi::c_ushort;
+pub type __u_int = ::core::ffi::c_uint;
+pub type __u_long = ::core::ffi::c_ulong;
+pub type __int8_t = ::core::ffi::c_schar;
+pub type __uint8_t = ::core::ffi::c_uchar;
+pub type __int16_t = ::core::ffi::c_short;
+pub type __uint16_t = ::core::ffi::c_ushort;
+pub type __int32_t = ::core::ffi::c_int;
+pub type __uint32_t = ::core::ffi::c_uint;
+pub type __int64_t = ::core::ffi::c_long;
+pub type __uint64_t = ::core::ffi::c_ulong;
 pub type __int_least8_t = __int8_t;
 pub type __uint_least8_t = __uint8_t;
 pub type __int_least16_t = __int16_t;
@@ -119,59 +119,59 @@ pub type __int_least32_t = __int32_t;
 pub type __uint_least32_t = __uint32_t;
 pub type __int_least64_t = __int64_t;
 pub type __uint_least64_t = __uint64_t;
-pub type __quad_t = ::std::os::raw::c_long;
-pub type __u_quad_t = ::std::os::raw::c_ulong;
-pub type __intmax_t = ::std::os::raw::c_long;
-pub type __uintmax_t = ::std::os::raw::c_ulong;
-pub type __dev_t = ::std::os::raw::c_ulong;
-pub type __uid_t = ::std::os::raw::c_uint;
-pub type __gid_t = ::std::os::raw::c_uint;
-pub type __ino_t = ::std::os::raw::c_ulong;
-pub type __ino64_t = ::std::os::raw::c_ulong;
-pub type __mode_t = ::std::os::raw::c_uint;
-pub type __nlink_t = ::std::os::raw::c_ulong;
-pub type __off_t = ::std::os::raw::c_long;
-pub type __off64_t = ::std::os::raw::c_long;
-pub type __pid_t = ::std::os::raw::c_int;
+pub type __quad_t = ::core::ffi::c_long;
+pub type __u_quad_t = ::core::ffi::c_ulong;
+pub type __intmax_t = ::core::ffi::c_long;
+pub type __uintmax_t = ::core::ffi::c_ulong;
+pub type __dev_t = ::core::ffi::c_ulong;
+pub type __uid_t = ::core::ffi::c_uint;
+pub type __gid_t = ::core::ffi::c_uint;
+pub type __ino_t = ::core::ffi::c_ulong;
+pub type __ino64_t = ::core::ffi::c_ulong;
+pub type __mode_t = ::core::ffi::c_uint;
+pub type __nlink_t = ::core::ffi::c_ulong;
+pub type __off_t = ::core::ffi::c_long;
+pub type __off64_t = ::core::ffi::c_long;
+pub type __pid_t = ::core::ffi::c_int;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct __fsid_t {
-    pub __val: [::std::os::raw::c_int; 2usize],
+    pub __val: [::core::ffi::c_int; 2usize],
 }
 #[allow(clippy::unnecessary_operation, clippy::identity_op)]
 const _: () = {
-    ["Size of __fsid_t"][::std::mem::size_of::<__fsid_t>() - 8usize];
-    ["Alignment of __fsid_t"][::std::mem::align_of::<__fsid_t>() - 4usize];
-    ["Offset of field: __fsid_t::__val"][::std::mem::offset_of!(__fsid_t, __val) - 0usize];
+    ["Size of __fsid_t"][::core::mem::size_of::<__fsid_t>() - 8usize];
+    ["Alignment of __fsid_t"][::core::mem::align_of::<__fsid_t>() - 4usize];
+    ["Offset of field: __fsid_t::__val"][::core::mem::offset_of!(__fsid_t, __val) - 0usize];
 };
-pub type __clock_t = ::std::os::raw::c_long;
-pub type __rlim_t = ::std::os::raw::c_ulong;
-pub type __rlim64_t = ::std::os::raw::c_ulong;
-pub type __id_t = ::std::os::raw::c_uint;
-pub type __time_t = ::std::os::raw::c_long;
-pub type __useconds_t = ::std::os::raw::c_uint;
-pub type __suseconds_t = ::std::os::raw::c_long;
-pub type __suseconds64_t = ::std::os::raw::c_long;
-pub type __daddr_t = ::std::os::raw::c_int;
-pub type __key_t = ::std::os::raw::c_int;
-pub type __clockid_t = ::std::os::raw::c_int;
-pub type __timer_t = *mut ::std::os::raw::c_void;
-pub type __blksize_t = ::std::os::raw::c_long;
-pub type __blkcnt_t = ::std::os::raw::c_long;
-pub type __blkcnt64_t = ::std::os::raw::c_long;
-pub type __fsblkcnt_t = ::std::os::raw::c_ulong;
-pub type __fsblkcnt64_t = ::std::os::raw::c_ulong;
-pub type __fsfilcnt_t = ::std::os::raw::c_ulong;
-pub type __fsfilcnt64_t = ::std::os::raw::c_ulong;
-pub type __fsword_t = ::std::os::raw::c_long;
-pub type __ssize_t = ::std::os::raw::c_long;
-pub type __syscall_slong_t = ::std::os::raw::c_long;
-pub type __syscall_ulong_t = ::std::os::raw::c_ulong;
+pub type __clock_t = ::core::ffi::c_long;
+pub type __rlim_t = ::core::ffi::c_ulong;
+pub type __rlim64_t = ::core::ffi::c_ulong;
+pub type __id_t = ::core::ffi::c_uint;
+pub type __time_t = ::core::ffi::c_long;
+pub type __useconds_t = ::core::ffi::c_uint;
+pub type __suseconds_t = ::core::ffi::c_long;
+pub type __suseconds64_t = ::core::ffi::c_long;
+pub type __daddr_t = ::core::ffi::c_int;
+pub type __key_t = ::core::ffi::c_int;
+pub type __clockid_t = ::core::ffi::c_int;
+pub type __timer_t = *mut ::core::ffi::c_void;
+pub type __blksize_t = ::core::ffi::c_long;
+pub type __blkcnt_t = ::core::ffi::c_long;
+pub type __blkcnt64_t = ::core::ffi::c_long;
+pub type __fsblkcnt_t = ::core::ffi::c_ulong;
+pub type __fsblkcnt64_t = ::core::ffi::c_ulong;
+pub type __fsfilcnt_t = ::core::ffi::c_ulong;
+pub type __fsfilcnt64_t = ::core::ffi::c_ulong;
+pub type __fsword_t = ::core::ffi::c_long;
+pub type __ssize_t = ::core::ffi::c_long;
+pub type __syscall_slong_t = ::core::ffi::c_long;
+pub type __syscall_ulong_t = ::core::ffi::c_ulong;
 pub type __loff_t = __off64_t;
-pub type __caddr_t = *mut ::std::os::raw::c_char;
-pub type __intptr_t = ::std::os::raw::c_long;
-pub type __socklen_t = ::std::os::raw::c_uint;
-pub type __sig_atomic_t = ::std::os::raw::c_int;
+pub type __caddr_t = *mut ::core::ffi::c_char;
+pub type __intptr_t = ::core::ffi::c_long;
+pub type __socklen_t = ::core::ffi::c_uint;
+pub type __sig_atomic_t = ::core::ffi::c_int;
 pub type int_least8_t = __int_least8_t;
 pub type int_least16_t = __int_least16_t;
 pub type int_least32_t = __int_least32_t;
@@ -180,67 +180,67 @@ pub type uint_least8_t = __uint_least8_t;
 pub type uint_least16_t = __uint_least16_t;
 pub type uint_least32_t = __uint_least32_t;
 pub type uint_least64_t = __uint_least64_t;
-pub type int_fast8_t = ::std::os::raw::c_schar;
-pub type int_fast16_t = ::std::os::raw::c_long;
-pub type int_fast32_t = ::std::os::raw::c_long;
-pub type int_fast64_t = ::std::os::raw::c_long;
-pub type uint_fast8_t = ::std::os::raw::c_uchar;
-pub type uint_fast16_t = ::std::os::raw::c_ulong;
-pub type uint_fast32_t = ::std::os::raw::c_ulong;
-pub type uint_fast64_t = ::std::os::raw::c_ulong;
+pub type int_fast8_t = ::core::ffi::c_schar;
+pub type int_fast16_t = ::core::ffi::c_long;
+pub type int_fast32_t = ::core::ffi::c_long;
+pub type int_fast64_t = ::core::ffi::c_long;
+pub type uint_fast8_t = ::core::ffi::c_uchar;
+pub type uint_fast16_t = ::core::ffi::c_ulong;
+pub type uint_fast32_t = ::core::ffi::c_ulong;
+pub type uint_fast64_t = ::core::ffi::c_ulong;
 pub type intmax_t = __intmax_t;
 pub type uintmax_t = __uintmax_t;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct mp3dec_frame_info_t {
-    pub frame_bytes: ::std::os::raw::c_int,
-    pub frame_offset: ::std::os::raw::c_int,
-    pub channels: ::std::os::raw::c_int,
-    pub hz: ::std::os::raw::c_int,
-    pub layer: ::std::os::raw::c_int,
-    pub bitrate_kbps: ::std::os::raw::c_int,
+    pub frame_bytes: ::core::ffi::c_int,
+    pub frame_offset: ::core::ffi::c_int,
+    pub channels: ::core::ffi::c_int,
+    pub hz: ::core::ffi::c_int,
+    pub layer: ::core::ffi::c_int,
+    pub bitrate_kbps: ::core::ffi::c_int,
 }
 #[allow(clippy::unnecessary_operation, clippy::identity_op)]
 const _: () = {
-    ["Size of mp3dec_frame_info_t"][::std::mem::size_of::<mp3dec_frame_info_t>() - 24usize];
-    ["Alignment of mp3dec_frame_info_t"][::std::mem::align_of::<mp3dec_frame_info_t>() - 4usize];
+    ["Size of mp3dec_frame_info_t"][::core::mem::size_of::<mp3dec_frame_info_t>() - 24usize];
+    ["Alignment of mp3dec_frame_info_t"][::core::mem::align_of::<mp3dec_frame_info_t>() - 4usize];
     ["Offset of field: mp3dec_frame_info_t::frame_bytes"]
-        [::std::mem::offset_of!(mp3dec_frame_info_t, frame_bytes) - 0usize];
+        [::core::mem::offset_of!(mp3dec_frame_info_t, frame_bytes) - 0usize];
     ["Offset of field: mp3dec_frame_info_t::frame_offset"]
-        [::std::mem::offset_of!(mp3dec_frame_info_t, frame_offset) - 4usize];
+        [::core::mem::offset_of!(mp3dec_frame_info_t, frame_offset) - 4usize];
     ["Offset of field: mp3dec_frame_info_t::channels"]
-        [::std::mem::offset_of!(mp3dec_frame_info_t, channels) - 8usize];
+        [::core::mem::offset_of!(mp3dec_frame_info_t, channels) - 8usize];
     ["Offset of field: mp3dec_frame_info_t::hz"]
-        [::std::mem::offset_of!(mp3dec_frame_info_t, hz) - 12usize];
+        [::core::mem::offset_of!(mp3dec_frame_info_t, hz) - 12usize];
     ["Offset of field: mp3dec_frame_info_t::layer"]
-        [::std::mem::offset_of!(mp3dec_frame_info_t, layer) - 16usize];
+        [::core::mem::offset_of!(mp3dec_frame_info_t, layer) - 16usize];
     ["Offset of field: mp3dec_frame_info_t::bitrate_kbps"]
-        [::std::mem::offset_of!(mp3dec_frame_info_t, bitrate_kbps) - 20usize];
+        [::core::mem::offset_of!(mp3dec_frame_info_t, bitrate_kbps) - 20usize];
 };
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct mp3dec_t {
     pub mdct_overlap: [[f32; 288usize]; 2usize],
     pub qmf_state: [f32; 960usize],
-    pub reserv: ::std::os::raw::c_int,
-    pub free_format_bytes: ::std::os::raw::c_int,
-    pub header: [::std::os::raw::c_uchar; 4usize],
-    pub reserv_buf: [::std::os::raw::c_uchar; 511usize],
+    pub reserv: ::core::ffi::c_int,
+    pub free_format_bytes: ::core::ffi::c_int,
+    pub header: [::core::ffi::c_uchar; 4usize],
+    pub reserv_buf: [::core::ffi::c_uchar; 511usize],
 }
 #[allow(clippy::unnecessary_operation, clippy::identity_op)]
 const _: () = {
-    ["Size of mp3dec_t"][::std::mem::size_of::<mp3dec_t>() - 6668usize];
-    ["Alignment of mp3dec_t"][::std::mem::align_of::<mp3dec_t>() - 4usize];
+    ["Size of mp3dec_t"][::core::mem::size_of::<mp3dec_t>() - 6668usize];
+    ["Alignment of mp3dec_t"][::core::mem::align_of::<mp3dec_t>() - 4usize];
     ["Offset of field: mp3dec_t::mdct_overlap"]
-        [::std::mem::offset_of!(mp3dec_t, mdct_overlap) - 0usize];
+        [::core::mem::offset_of!(mp3dec_t, mdct_overlap) - 0usize];
     ["Offset of field: mp3dec_t::qmf_state"]
-        [::std::mem::offset_of!(mp3dec_t, qmf_state) - 2304usize];
-    ["Offset of field: mp3dec_t::reserv"][::std::mem::offset_of!(mp3dec_t, reserv) - 6144usize];
+        [::core::mem::offset_of!(mp3dec_t, qmf_state) - 2304usize];
+    ["Offset of field: mp3dec_t::reserv"][::core::mem::offset_of!(mp3dec_t, reserv) - 6144usize];
     ["Offset of field: mp3dec_t::free_format_bytes"]
-        [::std::mem::offset_of!(mp3dec_t, free_format_bytes) - 6148usize];
-    ["Offset of field: mp3dec_t::header"][::std::mem::offset_of!(mp3dec_t, header) - 6152usize];
+        [::core::mem::offset_of!(mp3dec_t, free_format_bytes) - 6148usize];
+    ["Offset of field: mp3dec_t::header"][::core::mem::offset_of!(mp3dec_t, header) - 6152usize];
     ["Offset of field: mp3dec_t::reserv_buf"]
-        [::std::mem::offset_of!(mp3dec_t, reserv_buf) - 6156usize];
+        [::core::mem::offset_of!(mp3dec_t, reserv_buf) - 6156usize];
 };
 unsafe extern "C" {
     pub fn mp3dec_init(dec: *mut mp3dec_t);
@@ -250,8 +250,8 @@ unsafe extern "C" {
     pub fn mp3dec_decode_frame(
         dec: *mut mp3dec_t,
         mp3: *const u8,
-        mp3_bytes: ::std::os::raw::c_int,
+        mp3_bytes: ::core::ffi::c_int,
         pcm: *mut mp3d_sample_t,
         info: *mut mp3dec_frame_info_t,
-    ) -> ::std::os::raw::c_int;
+    ) -> ::core::ffi::c_int;
 }

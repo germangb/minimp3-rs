@@ -3,6 +3,7 @@ use thiserror::Error;
 /// Errors encountered by the MP3 decoder.
 #[derive(Debug, Error)]
 pub enum Error {
+    #[cfg(feature = "std")]
     #[error("IO error: {0}")]
     /// An error caused by some IO operation required during decoding.
     Io(#[from] std::io::Error),

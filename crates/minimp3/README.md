@@ -1,6 +1,7 @@
 # minimp3-rs
 
-Rust bindings and high-level wrapper for the [minimp3] library.
+Rust bindings with a high-level wrapper for the [minimp3] C
+library.
 
 As the C library is a header-only library, it is not necessary to link any
 C library statically or dynamically.
@@ -32,7 +33,7 @@ fn main() {
         match decoder.next_frame() {
             Ok(Frame { data, sample_rate, channels, .. }) => {
                 println!("Decoded {} samples", data.len() / channels)
-            },
+            }
             Err(Error::Eof) => break,
             Err(e) => panic!("{:?}", e),
         }
@@ -51,7 +52,7 @@ The decoder can be used with Tokio via the `async_tokio` feature flag.
 minimp3 = { version = "0.4", features = ["async_tokio"] }
 
 # tokio runtime
-tokio = {version = "0.2", features = ["full"] }
+tokio = { version = "0.2", features = ["full"] }
 ```
 
 ```rust
