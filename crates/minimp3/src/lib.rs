@@ -2,8 +2,8 @@
 //! Rust bindings with a high-level wrapper for the [minimp3]
 //! C library.
 //!
-//! As the C library is a header-only library, it is not necessary to link any
-//! C library statically or dynamically.
+//! The build process statically links all C code into the Rust library. There
+//! is no need for consumers to provide a library file of minimp3.
 //!
 //! ## Tokio
 //!
