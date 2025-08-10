@@ -1,0 +1,18 @@
+# Configuration for the typos spell checker utility (<https://github.com/crate-ci/typos>).
+
+[files]
+extend-exclude = [
+  # git submodule
+  "crates/minimp3-sys/minimp3",
+  "crates/minimp3-sys/src/bindings.rs",
+]
+
+[default]
+extend-ignore-identifiers-re = [
+]
+
+[default.extend-words]
+
+[default.extend-identifiers]
+
+
