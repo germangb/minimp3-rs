@@ -8,6 +8,25 @@
 //! IO and tokio.
 //!
 //! [See the README for example usages.](https://github.com/germangb/minimp3-rs/tree/async)
+
+#![deny(
+    clippy::all,
+    clippy::cargo,
+    clippy::nursery,
+    clippy::must_use_candidate,
+    // clippy::restriction,
+    // clippy::pedantic
+)]
+// now allow a few rules which are denied by the above statement
+// --> they are ridiculous and not necessary
+#![allow(
+    clippy::suboptimal_flops,
+    clippy::redundant_pub_crate,
+    clippy::fallible_impl_from
+)]
+#![deny(missing_debug_implementations)]
+#![deny(rustdoc::all)]
+
 pub use error::Error;
 pub use minimp3_sys as ffi;
 
@@ -23,8 +42,7 @@ const BUFFER_SIZE: usize = MAX_SAMPLES_PER_FRAME * 15;
 const REFILL_TRIGGER: usize = MAX_SAMPLES_PER_FRAME * 8;
 
 /// A MP3 decoder which consumes a reader and produces [`Frame`]s.
-///
-/// [`Frame`]: ./struct.Frame.html
+#[derive(Debug)]
 pub struct Decoder<R> {
     reader: R,
     buffer: SliceRingBuffer<u8>,
@@ -68,13 +86,13 @@ impl<R> Decoder<R> {
     }
 
     /// Return a reference to the underlying reader.
-    pub fn reader(&self) -> &R {
+    pub const fn reader(&self) -> &R {
         &self.reader
     }
 
     /// Return a mutable reference to the underlying reader (reading from it is
     /// not recommended).
-    pub fn reader_mut(&mut self) -> &mut R {
+    pub const fn reader_mut(&mut self) -> &mut R {
         &mut self.reader
     }
 
@@ -145,7 +163,7 @@ impl<R: tokio::io::AsyncRead + std::marker::Unpin> Decoder<R> {
                 // just let the loop spin around another time.
                 Err(Error::InsufficientData) | Err(Error::SkippedData) => {
                     // If there are no more bytes to be read from the file, return EOF
-                    if let Some(0) = bytes_read {
+                    if bytes_read == Some(0) {
                         return Err(Error::Eof);
                     }
                 }
@@ -168,7 +186,7 @@ impl<R: tokio::io::AsyncRead + std::marker::Unpin> Decoder<R> {
 //  use of .await after IO reads...
 
 impl<R: io::Read> Decoder<R> {
-    /// Reads a new frame from the internal reader. Returns a [`Frame`](Frame)
+    /// Reads a new frame from the internal reader. Returns a [`Frame`]
     /// if one was found, or, otherwise, an `Err` explaining why not.
     pub fn next_frame(&mut self) -> Result<Frame, Error> {
         loop {
@@ -185,7 +203,7 @@ impl<R: io::Read> Decoder<R> {
                 // just let the loop spin around another time.
                 Err(Error::InsufficientData) | Err(Error::SkippedData) => {
                     // If there are no more bytes to be read from the file, return EOF
-                    if let Some(0) = bytes_read {
+                    if bytes_read == Some(0) {
                         return Err(Error::Eof);
                     }
                 }

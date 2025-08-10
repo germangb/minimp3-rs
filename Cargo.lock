@@ -117,19 +117,10 @@ checksum = "32a282da65faaf38286cf3be983213fcf1d2e2a58700e808f83f4ea9a4804bc0"
 name = "minimp3"
 version = "0.6.0"
 dependencies = [
- "minimp3-sys 0.3.2",
+ "minimp3-sys",
  "slice-ring-buffer",
  "thiserror",
  "tokio",
-]
-
-[[package]]
-name = "minimp3-sys"
-version = "0.3.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e21c73734c69dc95696c9ed8926a2b393171d98b3f5f5935686a26a487ab9b90"
-dependencies = [
- "cc",
 ]
 
 [[package]]
