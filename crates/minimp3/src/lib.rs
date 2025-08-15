@@ -5,6 +5,14 @@
 //! The build process statically links all C code into the Rust library. There
 //! is no need for consumers to provide a library file of minimp3.
 //!
+//! ## CAUTION
+//! This crate is not recommended for new projects due to multiple memory
+//! unsoundness issues and the availability of mature, safe Rust alternatives.
+//! Consider using fully Rust-based libraries instead, such as:
+//!
+//! - [symphonia](https://crates.io/crates/symphonia)
+//! - [nanomp3](https://crates.io/crates/nanomp3)
+//!
 //! ## Tokio
 //!
 //! By enabling the feature flag `async_tokio` you can decode frames using async
