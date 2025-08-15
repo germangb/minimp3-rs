@@ -7,7 +7,7 @@ version = "0.6.1"
 authors = [
   "germän gômez <germangb42@gmail.com>",
   "Erin Moon <erin@hashbang.sh>",
-  "Philipp Schuster <phip1611@gmail.com",
+  "Philipp Schuster <phip1611@gmail.com>",
 ]
 keywords = ["mp3", "audio", "decoder", "mpeg", "media"]
 categories = ["multimedia", "multimedia::audio"]
