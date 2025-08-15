@@ -5,7 +5,7 @@ version = "0.6.0"
 authors = [
     "germän gômez <germangb42@gmail.com>",
     "Erin Moon <erin@hashbang.sh>",
-    "Philipp Schuster <phip1611@gmail.com",
+    "Philipp Schuster <phip1611@gmail.com>",
 ]
 categories = ["external-ffi-bindings", "no-std", "no-std::no-alloc"]
 keywords = ["mp3"]

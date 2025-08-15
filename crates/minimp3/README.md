@@ -6,6 +6,14 @@ library.
 The build process statically links all C code into the Rust library. There
 is no need for consumers to provide a library file of minimp3.
 
+## CAUTION ⚠️
+This crate is not recommended for new projects due to multiple memory
+unsoundness issues and the availability of mature, safe Rust alternatives.
+Consider using fully Rust-based libraries instead, such as:
+
+- [symphonia](https://crates.io/crates/symphonia)
+- [nanomp3](https://crates.io/crates/nanomp3)
+
 [![Cargo package](https://img.shields.io/crates/v/minimp3.svg)](https://crates.io/crates/minimp3)
 [![Cargo package](https://img.shields.io/crates/d/minimp3.svg)](https://crates.io/crates/minimp3)
 
