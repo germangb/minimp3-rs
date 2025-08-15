@@ -3,7 +3,7 @@ name = "minimp3"
 description = """
 Rust bindings with a high-level wrapper for the minimp3 C library.
 """
-version = "0.6.0"
+version = "0.6.1"
 authors = [
   "germän gômez <germangb42@gmail.com>",
   "Erin Moon <erin@hashbang.sh>",
